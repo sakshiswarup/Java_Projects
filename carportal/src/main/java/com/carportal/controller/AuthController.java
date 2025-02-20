@@ -5,22 +5,23 @@ import com.carportal.entity.User;
 import com.carportal.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
-private UserRepository userRepository;
+    private UserRepository userRepository;
 
     public AuthController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-    public ResponseEntity<String> createUser( @RequestBody User user){
+   @PostMapping
+    public ResponseEntity<String> createUser(
+            @RequestBody User user){
         Optional<User> opEmail = userRepository.findByEmail(user.getEmail());
         if(opEmail.isPresent()){
             return new ResponseEntity<>("Email id exists", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -35,7 +36,13 @@ private UserRepository userRepository;
         if (opUsername.isPresent()) {
             return new ResponseEntity<>("Username already exists", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        userRepository.save(user);
+       String hashpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(12));
+        user.setPassword(hashpw);
+       userRepository.save(user);
         return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
+    }
+    @GetMapping
+    public String getMessage(){
+        return "hello";
     }
 }
