@@ -13,7 +13,11 @@ public class SecurityConfig {
     ) throws Exception {
         http.csrf().disable().cors().disable();
         //haap
-        http.authorizeHttpRequests().anyRequest().permitAll();
+        //http.authorizeHttpRequests().anyRequest().permitAll();
+
+        http.authorizeHttpRequests().requestMatchers("/api/v1/auth/login","/api/v1/auth/sign-up")
+                .permitAll()
+                 .anyRequest().authenticated();
         return http.build();
     }
 }
