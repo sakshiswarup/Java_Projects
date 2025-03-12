@@ -12,20 +12,24 @@ import java.util.Optional;
 @Service
 public class AuthService {
     private UserRepository userRepository;
+    private JWTService jwtService;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, JWTService jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
-    public boolean authenticate(
+    public String authenticate(
             LoginDto dto
     ){
         Optional<User> opUser = userRepository.findByUsername(dto.getUsername());
         if (opUser.isPresent()){
             User user = opUser.get();
             boolean status = BCrypt.checkpw(dto.getPassword(), user.getPassword());
-            return status;
+            if(status){
+               return jwtService.generateToken(user.getUsername());
+            }
         }
-        return false;
+        return null;
     }
 
 }
