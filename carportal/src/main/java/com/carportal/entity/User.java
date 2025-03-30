@@ -1,27 +1,37 @@
 package com.carportal.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
-    @Column(name = "email", unique = true, nullable = false)
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "mobile", unique = true, nullable = false)
+    @Column(name = "mobile", nullable = false, unique = true)
     private String mobile;
 
-    @Column(name = "password", unique = true, nullable = false)
+    @Column(name = "password", nullable = false, unique = true)
     private String password;
+
+    @Column(name = "role", nullable = false)
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public String getEmail() {
         return email;
