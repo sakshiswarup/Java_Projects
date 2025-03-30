@@ -15,8 +15,10 @@ public class SecurityConfig {
         //haap
         //http.authorizeHttpRequests().anyRequest().permitAll();
 
-        http.authorizeHttpRequests().requestMatchers("/api/v1/auth/login","/api/v1/auth/sign-up")
+        http.authorizeHttpRequests().
+                requestMatchers("/api/v1/auth/login","/api/v1/auth/user/sign-up","/api/v1/auth/owner/sign-up")
                 .permitAll()
+                .requestMatchers("/api/v1/car ").hasRole("USER") //hasAnyRole for so many roles
                  .anyRequest().authenticated();
         return http.build();
     }
